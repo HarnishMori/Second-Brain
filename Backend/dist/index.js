@@ -21,6 +21,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const inspector_1 = require("inspector");
 const auth_1 = require("./middlewares/auth");
 const content_1 = require("./models/content");
+const hash_1 = require("./utils/hash");
 dotenv_1.default.config();
 const PORT = process.env.PORT || 5000;
 const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || "10");
@@ -123,12 +124,68 @@ app.delete("/api/v1/content", auth_1.userAuth, (req, res) => __awaiter(void 0, v
     catch (e) {
         inspector_1.console.error("not deleted", e);
         res.json({
-            message: "Not deleted"
+            message: "Not deleted",
         });
     }
 }));
-app.post("/api/v1/share", (req, res) => { });
-app.get("/api/v1/:shareLink", (req, res) => { });
+app.post("/api/v1/brain/share", auth_1.userAuth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const share = req.body.share;
+    if (share) {
+        const existingLink = yield user_1.Linkmodel.findOne({
+            userId: req.userId,
+        });
+        if (existingLink) {
+            res.json({
+                hash: existingLink.hash,
+            });
+            return;
+        }
+        const hash = (0, hash_1.genHash)(10);
+        yield user_1.Linkmodel.create({
+            hash: hash,
+            userId: req.userId,
+        });
+        res.json({
+            message: "/share/" + hash,
+        });
+    }
+    else {
+        yield user_1.Linkmodel.deleteOne({
+            userId: req.userId,
+        });
+        res.json({
+            message: "Rmoved Link",
+        });
+    }
+}));
+app.get("/api/v1/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const hash = req.params.shareLink;
+    const link = yield user_1.Linkmodel.findOne({
+        hash: hash,
+    });
+    if (!link) {
+        res.status(411).json({
+            message: "sorry incorrect input",
+        });
+        return;
+    }
+    const content = yield content_1.ContentModel.find({
+        userId: link.userId,
+    });
+    const user = yield user_1.Usermodel.findOne({
+        _id: link.userId,
+    });
+    if (!user) {
+        res.status(411).json({
+            message: "user not found",
+        });
+        return;
+    }
+    res.json({
+        username: user.username,
+        content: content,
+    });
+}));
 app.listen(PORT, () => {
     inspector_1.console.log(`server running on ${PORT}`);
 });

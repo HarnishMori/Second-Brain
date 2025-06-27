@@ -1,13 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-import { Usermodel } from "./models/user";
+import { Linkmodel, Usermodel } from "./models/user";
 import { connectDB } from "./config/db";
 import bcrypt from "bcrypt";
 import { AuthRequest, Iuser } from "./types/user";
 import { console } from "inspector";
 import { userAuth } from "./middlewares/auth";
 import { ContentModel } from "./models/content";
+import { genHash } from "./utils/hash";
 
 dotenv.config();
 
@@ -100,22 +101,81 @@ app.get("/api/v1/content", userAuth, async (req: AuthRequest, res) => {
 });
 app.delete("/api/v1/content", userAuth, async (req: AuthRequest, res) => {
   const { contentId } = req.body;
-  try{
+  try {
     await ContentModel.deleteOne({
-    _id: contentId,
-    userId: req.userId,
-  });
-  res.json({
-    message: "Deleted",
-  });}catch(e){
-    console.error("not deleted", e)
+      _id: contentId,
+      userId: req.userId,
+    });
     res.json({
-        message: "Not deleted"
-    })
+      message: "Deleted",
+    });
+  } catch (e) {
+    console.error("not deleted", e);
+    res.json({
+      message: "Not deleted",
+    });
   }
-})
-app.post("/api/v1/share", (req, res) => {});
-app.get("/api/v1/:shareLink", (req, res) => {});
+});
+app.post("/api/v1/brain/share", userAuth, async (req: AuthRequest, res) => {
+  const share = req.body.share;
+
+  if (share) {
+    const existingLink = await Linkmodel.findOne({
+      userId: req.userId,
+    });
+    if (existingLink) {
+      res.json({
+        hash: existingLink.hash,
+      });
+      return;
+    }
+    const hash = genHash(10);
+    await Linkmodel.create({
+      hash: hash,
+      userId: req.userId,
+    });
+    res.json({
+      message: "/share/" + hash,
+    });
+  } else {
+    await Linkmodel.deleteOne({
+      userId: req.userId,
+    });
+    res.json({
+      message: "Rmoved Link",
+    });
+  }
+});
+app.get("/api/v1/brain/:shareLink", async (req, res) => {
+  const hash = req.params.shareLink;
+
+  const link = await Linkmodel.findOne({
+    hash: hash,
+  });
+  if (!link) {
+    res.status(411).json({
+      message: "sorry incorrect input",
+    });
+    return;
+  }
+  const content = await ContentModel.find({
+    userId: link.userId,
+  });
+  const user = await Usermodel.findOne({
+    _id: link.userId,
+  });
+  if (!user) {
+    res.status(411).json({
+      message: "user not found",
+    });
+    return;
+  }
+
+  res.json({
+    username: user.username,
+    content: content,
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`server running on ${PORT}`);

@@ -1,2 +1,0 @@
-# Second-Brain
-MERN app 

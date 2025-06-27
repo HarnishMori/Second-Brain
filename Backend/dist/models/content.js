@@ -39,7 +39,7 @@ const user_1 = require("./user");
 const ContentSchema = new mongoose_1.Schema({
     title: String,
     link: String,
-    tags: [{ type: mongoose_1.default.Types.ObjectId, ref: 'Tag' }],
-    userId: { type: mongoose_1.default.Types.ObjectId, ref: user_1.Usermodel },
+    tags: [{ type: mongoose_1.default.Types.ObjectId, ref: "Tag" }],
+    userId: { type: mongoose_1.default.Types.ObjectId, ref: user_1.Usermodel, required: true },
 });
 exports.ContentModel = (0, mongoose_1.model)("Content", ContentSchema);
