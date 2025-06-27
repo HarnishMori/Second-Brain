@@ -1,11 +1,14 @@
 #Node Modules
-.node_modules/
+node_modules/
 
 #Environment Varialbles
 .env 
 
 #Build Outputs
-.dist/
+dist/
 
 # TypeScript cache
 *.tsbuildinfo
+
+# OS files
+.DS_Store

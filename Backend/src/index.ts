@@ -5,7 +5,6 @@ import { Linkmodel, Usermodel } from "./models/user";
 import { connectDB } from "./config/db";
 import bcrypt from "bcrypt";
 import { AuthRequest, Iuser } from "./types/user";
-import { console } from "inspector";
 import { userAuth } from "./middlewares/auth";
 import { ContentModel } from "./models/content";
 import { genHash } from "./utils/hash";
