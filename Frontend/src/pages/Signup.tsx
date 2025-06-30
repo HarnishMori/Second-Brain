@@ -1,8 +1,11 @@
 import React from 'react'
+import SignGeneric from '../components/SignGeneric'
 
 const Signup = () => {
   return (
-    <div>Signup</div>
+    <div>
+        <SignGeneric type="signup" />
+    </div>
   )
 }
 
