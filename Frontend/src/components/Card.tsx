@@ -26,7 +26,7 @@ const Card = ({ title, link, type }: cardProps) => {
   
     return (
     <div>
-      <div className="p-4 border rounded-md drop-shadow-lg bg-white outline-slate-200 max-w-72 min-h-48 min-w-72">
+      <div className="p-4 border z-[1] rounded-md drop-shadow-lg bg-white outline-slate-200 max-w-72 min-h-48 min-w-72">
         <div className="flex justify-between">
           <div className="flex items-center text-md">
             <div className="text-gray-500 pr-2">
@@ -34,8 +34,8 @@ const Card = ({ title, link, type }: cardProps) => {
             </div>
             {title}
           </div>
-          <div className="flex items-center ">
-            <div className="text-gray-500 pr-2">
+          <div className="flex items-center ml-20">
+            <div className="text-gray-500 pr-4">
               <a href={link} target="_blank"></a>
               <ShareIcon />
             </div>
