@@ -8,7 +8,6 @@ interface cardProps {
 }
 
 const Card = ({ title, link, type }: cardProps) => {
-  
   useEffect(() => {
     if (type === "twitter") {
       // Load Twitter widget script dynamically
@@ -23,8 +22,8 @@ const Card = ({ title, link, type }: cardProps) => {
       };
     }
   }, [type, link]);
-  
-    return (
+
+  return (
     <div>
       <div className="p-4 border z-[1] rounded-md drop-shadow-lg bg-white outline-slate-200 max-w-72 min-h-48 min-w-72">
         <div className="flex justify-between">
@@ -36,8 +35,9 @@ const Card = ({ title, link, type }: cardProps) => {
           </div>
           <div className="flex items-center ml-20">
             <div className="text-gray-500 pr-4">
-              <a href={link} target="_blank"></a>
-              <ShareIcon />
+              <a href={link} target="_blank">
+                <ShareIcon />
+              </a>
             </div>
             <div className="text-gray-500">
               <ShareIcon />

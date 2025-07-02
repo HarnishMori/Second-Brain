@@ -8,6 +8,7 @@ import { AuthRequest, Iuser } from "./types/user";
 import { userAuth } from "./middlewares/auth";
 import { ContentModel } from "./models/content";
 import { genHash } from "./utils/hash";
+import cors from "cors";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || "10");
 connectDB();
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.post("/api/v1/signup", async (req, res) => {
   // add zod validation
@@ -61,11 +63,12 @@ app.post("/api/v1/signin", async (req, res) => {
 });
 
 app.post("/api/v1/content", userAuth, async (req: AuthRequest, res) => {
-  const { link, type } = req.body;
+  const { link, type, title } = req.body;
   try {
     await ContentModel.create({
       link,
       type,
+      title,
       userId: req.userId,
       tag: [],
     });
@@ -130,7 +133,7 @@ app.post("/api/v1/brain/share", userAuth, async (req: AuthRequest, res) => {
     }
     const hash = genHash(10);
     await Linkmodel.create({
-      hash: hash,
+      hash: hash.toString(),
       userId: req.userId,
     });
     res.json({
