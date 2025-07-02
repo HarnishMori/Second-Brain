@@ -3,6 +3,7 @@ import SidebarItem from "./SidebarItem";
 import YouTube from "../icons/YouTube";
 import Twitter from "../icons/Twitter";
 import Logo from "../icons/Logo";
+import Button from "./Button";
 
 const Sidebar = () => {
   return (
@@ -17,6 +18,12 @@ const Sidebar = () => {
         <SidebarItem icon={<YouTube/>} text={"Youtube"} />
       <SidebarItem icon={<Twitter/>} text={"Twitter"} />
       </div>
+     <div className="flex m-16 inset-x-0 bottom-0 ">
+       <Button variant="primary" text="LogOut" onClick={()=>{
+          localStorage.removeItem("token")
+          window.location.href = "/signin"
+        }}/>
+     </div>
     </div>
   );
 };

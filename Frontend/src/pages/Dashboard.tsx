@@ -50,7 +50,7 @@ const Dashboard = () => {
           ></Button>
         </div>
         <div className="flex gap-4 mt-6 flex-wrap">
-          {contents.map(({ type, link, title }) => (
+          {contents.map(({ type, link, title}) => (
             <Card type={type} link={link} title={title} />
           ))}
         </div>
