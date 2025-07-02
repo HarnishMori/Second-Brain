@@ -1,14 +1,14 @@
 import React from "react";
 
 interface inputProps{
-    // onChange: () => void;
-    placeholder:string; 
+    placeholder:string;
+    reference?: any; 
 }
 
-const Input = ({  placeholder }:inputProps) => {
+const Input = ({  placeholder, reference }:inputProps) => {
   return (
     <div>
-      <input type={"text"} placeholder={placeholder} className="px-4 py-2 border rounded m-2"  />
+      <input ref={reference} type={"text"} placeholder={placeholder} className="px-4 py-2 border rounded m-2"  />
     </div>
   );
 };
